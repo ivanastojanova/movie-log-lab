@@ -4,7 +4,7 @@ import MovieItem from "./components/movie-item";
 import MovieForm from "./components/movie-form";
 
 export default function App() {
-  const movies = ALL_MOVIES.items;
+  const [movies, setMovies] = useState(ALL_MOVIES.items);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -16,6 +16,12 @@ export default function App() {
   function handleEdit(movie) {
     setSelectedMovie(movie);
     setIsFormOpen(true);
+  }
+
+  function handleRate(movieId, newRating) {
+    setMovies((prev) =>
+      prev.map((movie) => (movie.id === movieId ? { ...movie, rating: newRating } : movie))
+    );
   }
 
   function handleRemove(movie) {
@@ -60,6 +66,7 @@ export default function App() {
             movie={movie}
             onEdit={handleEdit}
             onRemove={handleRemove}
+            onRate={handleRate}
           />
         ))}
       </div>

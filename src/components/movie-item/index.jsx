@@ -1,7 +1,7 @@
 import MoviePoster from "./poster";
 import MovieDetails from "./details";
 
-export default function MovieItem({ movie, onEdit, onRemove }) {
+export default function MovieItem({ movie, onEdit, onRemove, onRate }) {
   const { name, image, rating, inTheaters, genres, description } = movie;
 
   return (
@@ -17,6 +17,7 @@ export default function MovieItem({ movie, onEdit, onRemove }) {
         genres={genres}
         description={description}
         rating={rating}
+        onRate={(newRating) => onRate(movie.id, newRating)}
       />
       <div className="flex gap-2 px-5 pb-5">
         <button className="btn btn-secondary flex-1" onClick={() => onEdit(movie)}>

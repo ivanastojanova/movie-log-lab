@@ -1,6 +1,6 @@
 import Rating from "./Rating";
 
-export default function MovieDetails({ name, genres, description, rating }) {
+export default function MovieDetails({ name, genres, description, rating, onRate }) {
   return (
     <div className="movie-item-content-wrapper">
       <div className="movie-item-title-wrapper">
@@ -18,7 +18,7 @@ export default function MovieDetails({ name, genres, description, rating }) {
         <p className="movie-item-description">{description}</p>
       </div>
 
-      <Rating rating={rating} />
+      <Rating rating={rating} onRate={onRate} />
     </div>
   );
 }
