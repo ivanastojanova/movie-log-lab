@@ -29,11 +29,22 @@ export default function App() {
   }
 
   function handleRemove(movie) {
-    console.log("remove", movie);
+    setMovies((prev) => prev.filter((m) => m.id !== movie.id));
   }
 
-  function handleSave(movieData) {
-    console.log(movieData);
+  function handleSave({ imageUrl, ...rest }) {
+    if (selectedMovie) {
+      setMovies((prev) =>
+        prev.map((m) =>
+          m.id === selectedMovie.id ? { ...m, ...rest, image: imageUrl } : m
+        )
+      );
+    } else {
+      setMovies((prev) => [
+        ...prev,
+        { id: Date.now(), rating: null, image: imageUrl, ...rest },
+      ]);
+    }
     setIsFormOpen(false);
   }
 
