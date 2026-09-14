@@ -3,12 +3,24 @@ import { ALL_MOVIES } from "./data/movies";
 import MovieItem from "./components/movie-item";
 import MovieForm from "./components/movie-form";
 
-// Set to one of ALL_MOVIES.items to test edit mode, or null for add mode
-const currentMovie = null;
-
 export default function App() {
   const movies = ALL_MOVIES.items;
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
+  function handleAdd() {
+    setSelectedMovie(null);
+    setIsFormOpen(true);
+  }
+
+  function handleEdit(movie) {
+    setSelectedMovie(movie);
+    setIsFormOpen(true);
+  }
+
+  function handleRemove(movie) {
+    console.log("remove", movie);
+  }
 
   function handleSave(movieData) {
     console.log(movieData);
@@ -22,7 +34,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
+      <button className="btn btn-primary" onClick={handleAdd}>
         Add Movie
       </button>
 
@@ -33,7 +45,7 @@ export default function App() {
         >
           <div onClick={(e) => e.stopPropagation()}>
             <MovieForm
-              movie={currentMovie}
+              movie={selectedMovie}
               onSave={handleSave}
               onCancel={handleCancel}
             />
@@ -43,7 +55,12 @@ export default function App() {
 
       <div className="movie-list">
         {movies.map((movie) => (
-          <MovieItem key={movie.id} movie={movie} />
+          <MovieItem
+            key={movie.id}
+            movie={movie}
+            onEdit={handleEdit}
+            onRemove={handleRemove}
+          />
         ))}
       </div>
     </div>

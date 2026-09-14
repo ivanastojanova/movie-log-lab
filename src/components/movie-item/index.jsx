@@ -1,7 +1,7 @@
 import MoviePoster from "./poster";
 import MovieDetails from "./details";
 
-export default function MovieItem({ movie }) {
+export default function MovieItem({ movie, onEdit, onRemove }) {
   const { name, image, rating, inTheaters, genres, description } = movie;
 
   return (
@@ -18,6 +18,17 @@ export default function MovieItem({ movie }) {
         description={description}
         rating={rating}
       />
+      <div className="flex gap-2 px-5 pb-5">
+        <button className="btn btn-secondary flex-1" onClick={() => onEdit(movie)}>
+          Edit
+        </button>
+        <button
+          className="btn flex-1 bg-red-500 hover:bg-red-600 text-white focus:ring-red-400 hover:shadow-md"
+          onClick={() => onRemove(movie)}
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 }
