@@ -24,6 +24,10 @@ export default function App() {
     );
   }
 
+  function handleClearRatings() {
+    setMovies((prev) => prev.map((movie) => ({ ...movie, rating: null })));
+  }
+
   function handleRemove(movie) {
     console.log("remove", movie);
   }
@@ -40,9 +44,14 @@ export default function App() {
 
   return (
     <div className="app">
-      <button className="btn btn-primary" onClick={handleAdd}>
-        Add Movie
-      </button>
+      <div className="flex gap-3">
+        <button className="btn btn-primary" onClick={handleAdd}>
+          Add Movie
+        </button>
+        <button className="btn btn-secondary" onClick={handleClearRatings}>
+          Remove Ratings
+        </button>
+      </div>
 
       {isFormOpen && (
         <div
