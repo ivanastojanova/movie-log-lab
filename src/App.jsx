@@ -53,8 +53,26 @@ export default function App() {
     setIsFormOpen(false);
   }
 
+  const ratedMovies = movies.filter((m) => Number.isFinite(m.rating));
+  const averageRating =
+    ratedMovies.length > 0
+      ? (ratedMovies.reduce((sum, m) => sum + m.rating, 0) / ratedMovies.length).toFixed(1)
+      : "N/A";
+
   return (
     <div className="app">
+      <header className="w-full max-w-7xl px-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Movie Ratings</h1>
+        <div className="flex gap-6 text-sm text-gray-600">
+          <span>
+            Total movies: <strong className="text-gray-900">{movies.length}</strong>
+          </span>
+          <span>
+            Average rating: <strong className="text-gray-900">{averageRating}</strong>
+          </span>
+        </div>
+      </header>
+
       <div className="flex gap-3">
         <button className="btn btn-primary" onClick={handleAdd}>
           Add Movie
