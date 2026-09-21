@@ -1,18 +1,22 @@
+import { Link } from "react-router";
 import MoviePoster from "./poster";
 import MovieDetails from "./details";
 
 export default function MovieItem({ movie, onEdit, onRemove, onRate }) {
-  const { name, image, rating, inTheaters, genres, description } = movie;
+  const { id, name, image, rating, inTheaters, genres, description } = movie;
 
   return (
     <div className="movie-item">
-      <MoviePoster
-        image={image}
-        name={name}
-        rating={rating}
-        inTheaters={inTheaters}
-      />
+      <Link to={`/movie/${id}`}>
+        <MoviePoster
+          image={image}
+          name={name}
+          rating={rating}
+          inTheaters={inTheaters}
+        />
+      </Link>
       <MovieDetails
+        movieId={id}
         name={name}
         genres={genres}
         description={description}

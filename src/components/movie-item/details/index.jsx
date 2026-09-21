@@ -1,22 +1,20 @@
+import { Link } from "react-router";
+import Title from "./Title";
+import Genres from "./Genres";
+import Description from "./Description";
 import Rating from "./Rating";
 
-export default function MovieDetails({ name, genres, description, rating, onRate }) {
+export default function MovieDetails({ movieId, name, genres, description, rating, onRate }) {
   return (
     <div className="movie-item-content-wrapper">
       <div className="movie-item-title-wrapper">
-        <h2 className="movie-item-title">{name}</h2>
-        <div className="movie-item-genres-wrapper">
-          {genres.map((genre) => (
-            <span key={genre} className="movie-item-genre-tag">
-              {genre}
-            </span>
-          ))}
-        </div>
+        <Link to={`/movie/${movieId}`} className="hover:underline">
+          <Title name={name} />
+        </Link>
+        <Genres genres={genres} />
       </div>
 
-      <div className="movie-item-description-wrapper">
-        <p className="movie-item-description">{description}</p>
-      </div>
+      <Description description={description} />
 
       <Rating rating={rating} onRate={onRate} />
     </div>
