@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getMovies } from "./services/movies-service";
+import { useFetch } from "./hooks/useFetch";
 import MovieItem from "./components/movie-item";
 import MovieItemSkeleton from "./components/movie-item/Skeleton";
 import MovieForm from "./components/movie-form";
@@ -8,25 +9,9 @@ import Modal from "./components/modal";
 const SKELETON_COUNT = 8;
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: movies, setData: setMovies, isLoading } = useFetch(getMovies, []);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    getMovies().then((data) => {
-      if (isMounted) {
-        setMovies(data);
-        setIsLoading(false);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   function handleAdd() {
     setSelectedMovie(null);
