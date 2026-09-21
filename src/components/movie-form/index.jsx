@@ -1,4 +1,4 @@
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { GENRES } from "../../types/genres";
 
 function validate({ name, genres }) {
@@ -17,6 +17,11 @@ export default function MovieForm({ movie, onSave, onCancel }) {
     inTheaters: movie?.inTheaters ?? false,
   });
   const [modifiedFields, setModifiedFields] = useState(new Set());
+  const nameInputRef = useRef(null);
+
+  useEffect(() => {
+    nameInputRef.current?.focus();
+  }, []);
 
   const [actionErrors, formAction, isPending] = useActionState(async (_, fd) => {
     const data = {
@@ -68,6 +73,7 @@ export default function MovieForm({ movie, onSave, onCancel }) {
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-gray-700">Name</label>
         <input
+          ref={nameInputRef}
           name="name"
           value={formData.name}
           onChange={handleChange}

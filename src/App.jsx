@@ -1,12 +1,32 @@
-import { useState } from "react";
-import { ALL_MOVIES } from "./data/movies";
+import { useEffect, useState } from "react";
+import { getMovies } from "./services/movies-service";
 import MovieItem from "./components/movie-item";
+import MovieItemSkeleton from "./components/movie-item/Skeleton";
 import MovieForm from "./components/movie-form";
+import Modal from "./components/modal";
+
+const SKELETON_COUNT = 8;
 
 export default function App() {
-  const [movies, setMovies] = useState(ALL_MOVIES.items);
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getMovies().then((data) => {
+      if (isMounted) {
+        setMovies(data);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleAdd() {
     setSelectedMovie(null);
@@ -83,30 +103,29 @@ export default function App() {
       </div>
 
       {isFormOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          onClick={handleCancel}
-        >
-          <div onClick={(e) => e.stopPropagation()}>
-            <MovieForm
-              movie={selectedMovie}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            />
-          </div>
-        </div>
+        <Modal onClose={handleCancel}>
+          <MovieForm
+            movie={selectedMovie}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        </Modal>
       )}
 
       <div className="movie-list">
-        {movies.map((movie) => (
-          <MovieItem
-            key={movie.id}
-            movie={movie}
-            onEdit={handleEdit}
-            onRemove={handleRemove}
-            onRate={handleRate}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              <MovieItemSkeleton key={i} />
+            ))
+          : movies.map((movie) => (
+              <MovieItem
+                key={movie.id}
+                movie={movie}
+                onEdit={handleEdit}
+                onRemove={handleRemove}
+                onRate={handleRate}
+              />
+            ))}
       </div>
     </div>
   );
