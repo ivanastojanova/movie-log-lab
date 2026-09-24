@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { getMovies } from "../services/movies-service";
+import {
+  getMovies,
+  createMovie,
+  updateMovie,
+  rateMovie,
+  clearRatings,
+  removeMovie,
+} from "../services/movies-service";
 import { useFetch } from "../hooks/useFetch";
 import MovieItem from "../components/movie-item";
 import MovieItemSkeleton from "../components/movie-item/Skeleton";
@@ -23,34 +30,46 @@ export default function HomePage() {
     setIsFormOpen(true);
   }
 
-  function handleRate(movieId, newRating) {
-    setMovies((prev) =>
-      prev.map((movie) => (movie.id === movieId ? { ...movie, rating: newRating } : movie))
-    );
-  }
-
-  function handleClearRatings() {
-    setMovies((prev) => prev.map((movie) => ({ ...movie, rating: null })));
-  }
-
-  function handleRemove(movie) {
-    setMovies((prev) => prev.filter((m) => m.id !== movie.id));
-  }
-
-  function handleSave({ imageUrl, ...rest }) {
-    if (selectedMovie) {
-      setMovies((prev) =>
-        prev.map((m) =>
-          m.id === selectedMovie.id ? { ...m, ...rest, image: imageUrl } : m
-        )
-      );
-    } else {
-      setMovies((prev) => [
-        ...prev,
-        { id: Date.now(), rating: null, image: imageUrl, ...rest },
-      ]);
+  async function handleRate(movieId, newRating) {
+    try {
+      const updated = await rateMovie(movieId, newRating);
+      setMovies((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+    } catch (e) {
+      console.error("Failed to rate movie:", e);
     }
-    setIsFormOpen(false);
+  }
+
+  async function handleClearRatings() {
+    try {
+      const updated = await clearRatings();
+      setMovies(updated);
+    } catch (e) {
+      console.error("Failed to clear ratings:", e);
+    }
+  }
+
+  async function handleRemove(movie) {
+    try {
+      await removeMovie(movie.id);
+      setMovies((prev) => prev.filter((m) => m.id !== movie.id));
+    } catch (e) {
+      console.error("Failed to remove movie:", e);
+    }
+  }
+
+  async function handleSave(formData) {
+    try {
+      if (selectedMovie) {
+        const updated = await updateMovie(selectedMovie.id, formData);
+        setMovies((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+      } else {
+        const created = await createMovie(formData);
+        setMovies((prev) => [...prev, created]);
+      }
+      setIsFormOpen(false);
+    } catch (e) {
+      console.error("Failed to save movie:", e);
+    }
   }
 
   function handleCancel() {
